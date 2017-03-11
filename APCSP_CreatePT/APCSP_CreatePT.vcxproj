@@ -144,11 +144,14 @@
   <ItemGroup>
     <ClCompile Include="main.c" />
     <ClCompile Include="MainWin.c" />
+    <ClCompile Include="PaintWin.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IDs.h" />
     <ClInclude Include="MainWin.h" />
     <ClInclude Include="MainWinPriv.h" />
+    <ClInclude Include="PaintWin.h" />
+    <ClInclude Include="PaintWinPriv.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

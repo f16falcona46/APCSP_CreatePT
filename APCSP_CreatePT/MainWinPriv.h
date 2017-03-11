@@ -1,8 +1,6 @@
 #pragma once
 
-typedef struct {
-	POINT pendulumPos;
-	INT count;
-} MainWinData;
+#include "MainWin.h"
 
 #define MAINWINDATA_OFFSET 0
+#define MAINWINTIMER_INTERVAL (1000/60)

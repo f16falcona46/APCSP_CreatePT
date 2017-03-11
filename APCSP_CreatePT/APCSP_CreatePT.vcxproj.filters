@@ -21,6 +21,9 @@
     <ClCompile Include="MainWin.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PaintWin.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainWin.h">
@@ -30,6 +33,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MainWinPriv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PaintWin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PaintWinPriv.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

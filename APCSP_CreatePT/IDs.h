@@ -1,3 +1,4 @@
 #pragma once
 
-#define IDI_UPDATETIMER 101
+#define ID_UPDATETIMER 101
+#define ID_PAINTWINUPDATE 201
