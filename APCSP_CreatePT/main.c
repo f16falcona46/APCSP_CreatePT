@@ -1,4 +1,4 @@
-#include <windows.h>
+#include <Windows.h>
 
 #include "MainWin.h"
 
@@ -12,7 +12,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstnace, LPSTR lpCmdLine
 		return -1;
 	}
 
-	hwnd = CreateWindow(MAINWINCLASS, L"Main Window", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 400, 300, NULL, NULL, hInstance, NULL);
+	hwnd = CreateWindow(MAINWINCLASS, L"Pendulum Simulator", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 400, 300, NULL, NULL, hInstance, NULL);
 	if (!hwnd) {
 		MessageBox(NULL, L"Window Creation failed", L"Error", MB_ICONERROR | MB_OK);
 		return -1;

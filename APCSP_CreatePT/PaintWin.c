@@ -16,7 +16,7 @@ ATOM RegisterPaintWin(HINSTANCE hInstance)
 	wc.cbWndExtra = sizeof(void*);
 	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW);
 	wc.lpszClassName = PAINTWINCLASS;
 
 	return RegisterClassEx(&wc);

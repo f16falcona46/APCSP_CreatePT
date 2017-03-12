@@ -1,10 +1,12 @@
 #pragma once
 
-#include <windows.h>
+#include <Windows.h>
 
 typedef struct {
 	INT count;
 	HWND paintWin;
+	HWND massSlider;
+	HWND lengthSlider;
 } MainWinData;
 
 #define MAINWINCLASS L"MainWindowClassName"

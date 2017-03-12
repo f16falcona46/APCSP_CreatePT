@@ -2,6 +2,9 @@
 #include "MainWinPriv.h"
 #include "IDs.h"
 #include "PaintWin.h"
+#include <CommCtrl.h>
+#pragma comment(lib, "comctl32.lib")
+#pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 #include <math.h>
 
@@ -17,7 +20,7 @@ ATOM RegisterMainWin(HINSTANCE hInstance)
 	wc.cbWndExtra = sizeof(void*);
 	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW);
 	wc.lpszClassName = MAINWINCLASS;
 
 	return RegisterClassEx(&wc);
@@ -31,6 +34,7 @@ LRESULT CALLBACK MainWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		const CREATESTRUCT* cs = (CREATESTRUCT*)lParam;
 		MainWinData* data;
 		RECT rc;
+		INITCOMMONCONTROLSEX initctrls;
 
 		data = (MainWinData*)GlobalAlloc(GMEM_FIXED | GMEM_ZEROINIT, sizeof(MainWinData));
 		if (!data) {
@@ -47,12 +51,29 @@ LRESULT CALLBACK MainWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			return -1;
 		}
 		GetClientRect(hwnd, &rc);
-		HWND paintWin = CreateWindow(PAINTWINCLASS, L"Paint window", WS_CHILD | WS_VISIBLE, 0, 0, rc.right, rc.bottom, hwnd, NULL, cs->hInstance, NULL);
-		if (!paintWin) {
-			MessageBox(hwnd, L"Unable to create paintwin.", L"Error", MB_ICONERROR | MB_OK);
+		data->paintWin = CreateWindow(PAINTWINCLASS, L"Paint window", WS_CHILD | WS_VISIBLE, 0, 0, rc.right, rc.bottom, hwnd, NULL, cs->hInstance, NULL);
+
+		initctrls.dwSize = sizeof(initctrls);
+		initctrls.dwICC = ICC_BAR_CLASSES;
+		if (!InitCommonControlsEx(&initctrls)) {
+			MessageBox(hwnd, L"Unable to init common controls.", L"Error", MB_ICONERROR | MB_OK);
 			return -1;
 		}
-		data->paintWin = paintWin;
+		data->massSlider = CreateWindowEx(0, TRACKBAR_CLASS, L"Mass", WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS, 0, 0, 10, 10, hwnd, NULL, cs->hInstance, NULL);
+		data->lengthSlider = CreateWindowEx(0, TRACKBAR_CLASS, L"Length", WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS, 0, 0, 10, 10, hwnd, NULL, cs->hInstance, NULL);
+		if (!(data->paintWin && data->massSlider && data->lengthSlider)) {
+			MessageBox(hwnd, L"Unable to create child windows.", L"Error", MB_ICONERROR | MB_OK);
+			return -1;
+		}
+
+		SendMessage(data->massSlider, TBM_SETRANGE, (WPARAM)TRUE, MAKELPARAM(10, 50));
+		SendMessage(data->massSlider, TBM_SETPAGESIZE, 0, (LPARAM)20);
+		SendMessage(data->massSlider, TBM_SETLINESIZE, 0, (LPARAM)5);
+		SendMessage(data->massSlider, TBM_SETTICFREQ, (WPARAM)5, 0);
+		SendMessage(data->lengthSlider, TBM_SETRANGE, (WPARAM)TRUE, MAKELPARAM(50, 170));
+		SendMessage(data->lengthSlider, TBM_SETPAGESIZE, 0, (LPARAM)40);
+		SendMessage(data->lengthSlider, TBM_SETLINESIZE, 0, (LPARAM)10);
+		SendMessage(data->lengthSlider, TBM_SETTICFREQ, (WPARAM)10, 0);
 	}
 	break;
 	case WM_GETMINMAXINFO:
@@ -67,7 +88,9 @@ LRESULT CALLBACK MainWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		const MainWinData* data = (MainWinData*)GetWindowLongPtr(hwnd, MAINWINDATA_OFFSET);
 		RECT rc;
 		GetClientRect(hwnd, &rc);
-		MoveWindow(data->paintWin, 0, 0, rc.right - 50, rc.bottom, TRUE);
+		MoveWindow(data->paintWin, 0, 0, rc.right - 100, rc.bottom, TRUE);
+		MoveWindow(data->massSlider, rc.right - 100, 0, 100, 40, TRUE);
+		MoveWindow(data->lengthSlider, rc.right - 100, 40, 100, 40, TRUE);
 	}
 	break;
 	case WM_TIMER:
