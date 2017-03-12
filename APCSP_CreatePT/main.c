@@ -23,5 +23,5 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstnace, LPSTR lpCmdLine
 		DispatchMessage(&msg);
 	}
 	
-	return msg.wParam;
+	return (INT)msg.wParam;
 }

@@ -31,12 +31,13 @@ LRESULT CALLBACK MainWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		const CREATESTRUCT* cs = (CREATESTRUCT*)lParam;
 		MainWinData* data;
 		RECT rc;
+
 		data = (MainWinData*)GlobalAlloc(GMEM_FIXED | GMEM_ZEROINIT, sizeof(MainWinData));
 		if (!data) {
 			MessageBox(hwnd, L"Unable to allocate memory.", L"Error", MB_ICONERROR | MB_OK);
 			return -1;
 		}
-		SetWindowLongPtr(hwnd, MAINWINDATA_OFFSET, data);
+		SetWindowLongPtr(hwnd, MAINWINDATA_OFFSET, (LONG_PTR)data);
 		if (!SetTimer(hwnd, ID_UPDATETIMER, MAINWINTIMER_INTERVAL, NULL)) {
 			MessageBox(hwnd, L"Unable to set timer.", L"Error", MB_ICONERROR | MB_OK);
 			return -1;
@@ -46,7 +47,7 @@ LRESULT CALLBACK MainWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			return -1;
 		}
 		GetClientRect(hwnd, &rc);
-		HWND paintWin = CreateWindow(PAINTWINCLASS, "Paint window", WS_CHILD | WS_VISIBLE, 0, 0, rc.right, rc.bottom, hwnd, NULL, cs->hInstance, NULL);
+		HWND paintWin = CreateWindow(PAINTWINCLASS, L"Paint window", WS_CHILD | WS_VISIBLE, 0, 0, rc.right, rc.bottom, hwnd, NULL, cs->hInstance, NULL);
 		if (!paintWin) {
 			MessageBox(hwnd, L"Unable to create paintwin.", L"Error", MB_ICONERROR | MB_OK);
 			return -1;
