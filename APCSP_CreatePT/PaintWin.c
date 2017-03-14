@@ -34,7 +34,7 @@ LRESULT CALLBACK PaintWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			MessageBox(hwnd, L"Unable to allocate memory.", L"Error", MB_ICONERROR | MB_OK);
 			return -1;
 		}
-		SetWindowLongPtr(hwnd, PENDULUMDATA_OFFSET, data);
+		SetWindowLongPtr(hwnd, PENDULUMDATA_OFFSET, (LONG_PTR)data);
 	}
 	break;
 	case WM_PAINT:
