@@ -28,7 +28,6 @@ LRESULT CALLBACK PaintWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	case WM_CREATE:
 	{
 		PendulumData* data;
-		INT rc;
 		data = (PendulumData*)GlobalAlloc(GMEM_FIXED | GMEM_ZEROINIT, sizeof(PendulumData));
 		if (!data) {
 			MessageBox(hwnd, L"Unable to allocate memory.", L"Error", MB_ICONERROR | MB_OK);
@@ -52,7 +51,7 @@ LRESULT CALLBACK PaintWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		case ID_PAINTWINUPDATE:
 		{
 			PendulumData* data = (PendulumData*)GetWindowLongPtr(hwnd, PENDULUMDATA_OFFSET);
-			UpdatePendulum(hwnd, data, lParam);
+			UpdatePendulum(hwnd, data, (INT)lParam);
 		}
 		break;
 		}
@@ -63,12 +62,6 @@ LRESULT CALLBACK PaintWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		UpdatePendulum(hwnd, data, 0);
 	}
 	break;
-	case WM_CLOSE:
-		DestroyWindow(hwnd);
-		break;
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		break;
 	default:
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
 	}
@@ -96,7 +89,7 @@ void UpdatePendulum(HWND hwnd, PendulumData* data, INT interval)
 	RECT rc;
 	data->count += interval;
 	GetClientRect(hwnd, &rc);
-	data->pendulumPos.x = rc.right / 2 * (sin(data->count / 500.0) + 1);
+	data->pendulumPos.x = (LONG)(rc.right / 2 * (sin(data->count / 500.0) + 1));
 	data->pendulumPos.y = rc.bottom;
 	InvalidateRect(hwnd, NULL, TRUE);
 	UpdateWindow(hwnd);
