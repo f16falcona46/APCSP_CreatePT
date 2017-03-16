@@ -33,6 +33,12 @@ LRESULT CALLBACK PaintWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			MessageBox(hwnd, L"Unable to allocate memory.", L"Error", MB_ICONERROR | MB_OK);
 			return -1;
 		}
+
+		/* TODO remove this placeholder */
+		data->pendulumLength = 100;
+		data->pendulumMass = 30;
+		/* end TODO */
+
 		SetWindowLongPtr(hwnd, PENDULUMDATA_OFFSET, (LONG_PTR)data);
 	}
 	break;
@@ -46,16 +52,36 @@ LRESULT CALLBACK PaintWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		EndPaint(hwnd, &ps);
 	}
 	break;
-	case WM_COMMAND:
-		switch (LOWORD(wParam)) {
-		case ID_PAINTWINUPDATE:
-		{
-			PendulumData* data = (PendulumData*)GetWindowLongPtr(hwnd, PENDULUMDATA_OFFSET);
-			UpdatePendulum(hwnd, data, (INT)lParam);
-		}
-		break;
-		}
-		break;
+	case PWM_UPDATE_TICK:
+	{
+		PendulumData* data = (PendulumData*)GetWindowLongPtr(hwnd, PENDULUMDATA_OFFSET);
+		UpdatePendulum(hwnd, data, (INT)wParam);
+	}
+	break;
+	case PWM_SETPENDULUMLENGTH:
+	{
+		PendulumData* data = (PendulumData*)GetWindowLongPtr(hwnd, PENDULUMDATA_OFFSET);
+		data->pendulumLength = *(DOUBLE*)lParam;
+	}
+	break;
+	case PWM_SETPENDULUMMASS:
+	{
+		PendulumData* data = (PendulumData*)GetWindowLongPtr(hwnd, PENDULUMDATA_OFFSET);
+		data->pendulumMass = *(DOUBLE*)lParam;
+	}
+	break;
+	case PWM_GETPENDULUMLENGTH:
+	{
+		const PendulumData* data = (PendulumData*)GetWindowLongPtr(hwnd, PENDULUMDATA_OFFSET);
+		*(DOUBLE*)lParam = data->pendulumLength;
+	}
+	break;
+	case PWM_GETPENDULUMMASS:
+	{
+		const PendulumData* data = (PendulumData*)GetWindowLongPtr(hwnd, PENDULUMDATA_OFFSET);
+		*(DOUBLE*)lParam = data->pendulumMass;
+	}
+	break;
 	case WM_SIZE:
 	{
 		PendulumData* data = (PendulumData*)GetWindowLongPtr(hwnd, PENDULUMDATA_OFFSET);
@@ -88,9 +114,10 @@ void UpdatePendulum(HWND hwnd, PendulumData* data, INT interval)
 {
 	RECT rc;
 	data->count += interval;
+	data->phase = data->count / 500.0;
 	GetClientRect(hwnd, &rc);
-	data->pendulumPos.x = (LONG)(rc.right / 2 * (sin(data->count / 500.0) + 1));
-	data->pendulumPos.y = rc.bottom;
+	data->pendulumPos.x = (LONG)(data->pendulumLength * sin(sin(data->phase) / 4) + rc.right / 2);
+	data->pendulumPos.y = (LONG)(data->pendulumLength * cos(sin(data->phase) / 4));
 	InvalidateRect(hwnd, NULL, TRUE);
 	UpdateWindow(hwnd);
 }

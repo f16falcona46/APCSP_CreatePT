@@ -2,22 +2,13 @@
 
 #include <Windows.h>
 
-typedef struct {
-	INT count;
-	HWND paintWin;
-	HWND massSlider;
-	HWND massSliderNameLabel;
-	HWND massSliderMinLabel;
-	HWND massSliderMaxLabel;
-	HWND massSliderValueLabel;
-	HWND lengthSlider;
-	HWND lengthSliderNameLabel;
-	HWND lengthSliderMinLabel;
-	HWND lengthSliderMaxLabel;
-	HWND lengthSliderValueLabel;
-} MainWinData;
-
+/* MAINWINCLASS
+	use this to instantiate the window
+*/
 #define MAINWINCLASS L"MainWindowClassName"
 
+/* RegisterMainWin
+	returns NULL for failure, just like RegisterClassEx
+	otherwise returns the ATOM from it
+*/
 ATOM RegisterMainWin(HINSTANCE hInstance);
-LRESULT CALLBACK MainWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

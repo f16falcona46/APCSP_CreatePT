@@ -84,9 +84,9 @@ LRESULT CALLBACK MainWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		SendMessage(data->massSlider, TBM_SETTICFREQ, (WPARAM)5, 0);
 
 		SetWindowText(data->massSliderNameLabel, L"Mass");
-		SetWindowText(data->massSliderMinLabel, L"10");
-		SetWindowText(data->massSliderMaxLabel, L"50");
-		SetWindowText(data->massSliderValueLabel, L"10");
+		SetWindowText(data->massSliderMinLabel, L"10 kg");
+		SetWindowText(data->massSliderMaxLabel, L"50 kg");
+		SetWindowText(data->massSliderValueLabel, L"10 kg");
 
 		SendMessage(data->lengthSlider, TBM_SETRANGE, (WPARAM)TRUE, MAKELPARAM(50, 170));
 		SendMessage(data->lengthSlider, TBM_SETPAGESIZE, 0, (LPARAM)40);
@@ -94,9 +94,9 @@ LRESULT CALLBACK MainWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		SendMessage(data->lengthSlider, TBM_SETTICFREQ, (WPARAM)10, 0);
 
 		SetWindowText(data->lengthSliderNameLabel, L"Length");
-		SetWindowText(data->lengthSliderMinLabel, L"50");
-		SetWindowText(data->lengthSliderMaxLabel, L"170");
-		SetWindowText(data->lengthSliderValueLabel, L"50");
+		SetWindowText(data->lengthSliderMinLabel, L"50 m");
+		SetWindowText(data->lengthSliderMaxLabel, L"170 m");
+		SetWindowText(data->lengthSliderValueLabel, L"50 m");
 
 		dialogFont = CreateFont(-12, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, L"Segoe UI");
 		if (dialogFont) {
@@ -148,7 +148,7 @@ LRESULT CALLBACK MainWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			MainWinData* data = (MainWinData*)GetWindowLongPtr(hwnd, MAINWINDATA_OFFSET);
 			data->count += MAINWINTIMER_INTERVAL;
-			SendMessage(data->paintWin, WM_COMMAND, ID_PAINTWINUPDATE, MAINWINTIMER_INTERVAL);
+			SendMessage(data->paintWin, PWM_UPDATE_TICK, MAINWINTIMER_INTERVAL, NULL);
 		}
 		break;
 		default:
