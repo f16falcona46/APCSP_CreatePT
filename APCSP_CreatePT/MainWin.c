@@ -36,6 +36,8 @@ LRESULT CALLBACK MainWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		RECT rc;
 		INITCOMMONCONTROLSEX initctrls;
 		HFONT dialogFont;
+		DOUBLE length;
+		DOUBLE mass;
 
 		data = (MainWinData*)GlobalAlloc(GMEM_FIXED | GMEM_ZEROINIT, sizeof(MainWinData));
 		if (!data) {
@@ -113,6 +115,11 @@ LRESULT CALLBACK MainWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		else {
 			MessageBox(hwnd, L"Could not create font.", L"Warning", MB_ICONEXCLAMATION | MB_OK);
 		}
+
+		length = (DOUBLE)SendMessage(data->lengthSlider, TBM_GETPOS, 0, 0);
+		SendMessage(data->paintWin, PWM_SETPENDULUMLENGTH, 0, (LPARAM)&length);
+		mass = (DOUBLE)SendMessage(data->massSlider, TBM_GETPOS, 0, 0);
+		SendMessage(data->paintWin, PWM_SETPENDULUMMASS, 0, (LPARAM)&mass);
 	}
 	break;
 	case WM_GETMINMAXINFO:
@@ -148,13 +155,26 @@ LRESULT CALLBACK MainWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			MainWinData* data = (MainWinData*)GetWindowLongPtr(hwnd, MAINWINDATA_OFFSET);
 			data->count += MAINWINTIMER_INTERVAL;
-			SendMessage(data->paintWin, PWM_UPDATE_TICK, MAINWINTIMER_INTERVAL, NULL);
+			SendMessage(data->paintWin, PWM_UPDATE_TICK, MAINWINTIMER_INTERVAL, (LPARAM)NULL);
 		}
 		break;
 		default:
 			MessageBox(hwnd, L"Unexpected timer.", L"Error", MB_ICONERROR | MB_OK);
 			return -1;
 		}
+	break;
+	case WM_HSCROLL:
+	{
+		const MainWinData* data = (MainWinData*)GetWindowLongPtr(hwnd, MAINWINDATA_OFFSET);
+		if ((HWND)lParam == data->lengthSlider) {
+			DOUBLE length = (DOUBLE)SendMessage((HWND)lParam, TBM_GETPOS, 0, 0);
+			SendMessage(data->paintWin, PWM_SETPENDULUMLENGTH, 0, (LPARAM)&length);
+		}
+		else if ((HWND)lParam == data->massSlider) {
+			DOUBLE mass = (DOUBLE)SendMessage((HWND)lParam, TBM_GETPOS, 0, 0);
+			SendMessage(data->paintWin, PWM_SETPENDULUMMASS, 0, (LPARAM)&mass);
+		}
+	}
 	break;
 	case WM_CLOSE:
 		DestroyWindow(hwnd);

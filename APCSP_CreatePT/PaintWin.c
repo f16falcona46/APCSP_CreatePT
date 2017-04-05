@@ -3,6 +3,7 @@
 #include "IDs.h"
 
 #include <math.h>
+#include <assert.h>
 
 ATOM RegisterPaintWin(HINSTANCE hInstance)
 {
@@ -35,8 +36,8 @@ LRESULT CALLBACK PaintWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		}
 
 		/* TODO remove this placeholder */
-		data->pendulumLength = 100;
-		data->pendulumMass = 30;
+		//data->pendulumLength = 100;
+		//data->pendulumMass = 30;
 		/* end TODO */
 
 		SetWindowLongPtr(hwnd, PENDULUMDATA_OFFSET, (LONG_PTR)data);
@@ -55,30 +56,35 @@ LRESULT CALLBACK PaintWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	case PWM_UPDATE_TICK:
 	{
 		PendulumData* data = (PendulumData*)GetWindowLongPtr(hwnd, PENDULUMDATA_OFFSET);
+		assert(lParam == NULL);
 		UpdatePendulum(hwnd, data, (INT)wParam);
 	}
 	break;
 	case PWM_SETPENDULUMLENGTH:
 	{
 		PendulumData* data = (PendulumData*)GetWindowLongPtr(hwnd, PENDULUMDATA_OFFSET);
+		assert(wParam == 0);
 		data->pendulumLength = *(DOUBLE*)lParam;
 	}
 	break;
 	case PWM_SETPENDULUMMASS:
 	{
 		PendulumData* data = (PendulumData*)GetWindowLongPtr(hwnd, PENDULUMDATA_OFFSET);
+		assert(wParam == 0);
 		data->pendulumMass = *(DOUBLE*)lParam;
 	}
 	break;
 	case PWM_GETPENDULUMLENGTH:
 	{
 		const PendulumData* data = (PendulumData*)GetWindowLongPtr(hwnd, PENDULUMDATA_OFFSET);
+		assert(wParam == 0);
 		*(DOUBLE*)lParam = data->pendulumLength;
 	}
 	break;
 	case PWM_GETPENDULUMMASS:
 	{
 		const PendulumData* data = (PendulumData*)GetWindowLongPtr(hwnd, PENDULUMDATA_OFFSET);
+		assert(wParam == 0);
 		*(DOUBLE*)lParam = data->pendulumMass;
 	}
 	break;
@@ -108,6 +114,11 @@ void DrawPendulum(HWND hwnd, HDC hdc, PAINTSTRUCT* ps, const PendulumData* data)
 
 	MoveToEx(hdc, rc.right / 2, rc.top, NULL);
 	LineTo(hdc, data->pendulumPos.x, data->pendulumPos.y);
+
+	Ellipse(hdc, data->pendulumPos.x - data->pendulumMass / 2,
+		data->pendulumPos.y - data->pendulumMass / 2,
+		data->pendulumPos.x + data->pendulumMass / 2,
+		data->pendulumPos.y + data->pendulumMass / 2);
 }
 
 void UpdatePendulum(HWND hwnd, PendulumData* data, INT interval)
