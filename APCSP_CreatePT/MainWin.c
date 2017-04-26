@@ -7,6 +7,7 @@
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 #include <math.h>
+#include <stdio.h>
 
 ATOM RegisterMainWin(HINSTANCE hInstance)
 {
@@ -64,12 +65,14 @@ LRESULT CALLBACK MainWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		data->massSlider = CreateWindowEx(0, TRACKBAR_CLASS, L"Mass", WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS, 0, 0, 10, 10, hwnd, NULL, cs->hInstance, NULL);
 		data->massSliderNameLabel = CreateWindow(L"STATIC", L"MSliderNameLabel", WS_CHILD | WS_VISIBLE | SS_LEFT, 0, 0, 10, 10, hwnd, NULL, cs->hInstance, NULL);
+		data->massSliderValueLabel = CreateWindow(L"STATIC", L"MSliderValueLabel", WS_CHILD | WS_VISIBLE | SS_LEFT, 0, 0, 10, 10, hwnd, NULL, cs->hInstance, NULL);
 		data->massSliderMinLabel = CreateWindow(L"STATIC", L"MSliderMinLabel", WS_CHILD | WS_VISIBLE | SS_LEFT, 0, 0, 10, 10, hwnd, NULL, cs->hInstance, NULL);
 		data->massSliderMaxLabel = CreateWindow(L"STATIC", L"MSliderMaxLabel", WS_CHILD | WS_VISIBLE | SS_RIGHT, 0, 0, 10, 10, hwnd, NULL, cs->hInstance, NULL);
 		data->massSliderValueLabel = CreateWindow(L"STATIC", L"MSliderValueLabel", WS_CHILD | WS_VISIBLE | SS_RIGHT, 0, 0, 10, 10, hwnd, NULL, cs->hInstance, NULL);
 
 		data->lengthSlider = CreateWindowEx(0, TRACKBAR_CLASS, L"Length", WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS, 0, 0, 10, 10, hwnd, NULL, cs->hInstance, NULL);
 		data->lengthSliderNameLabel = CreateWindow(L"STATIC", L"LSliderNameLabel", WS_CHILD | WS_VISIBLE | SS_LEFT, 0, 0, 10, 10, hwnd, NULL, cs->hInstance, NULL);
+		data->lengthSliderValueLabel = CreateWindow(L"STATIC", L"LSliderValueLabel", WS_CHILD | WS_VISIBLE | SS_LEFT, 0, 0, 10, 10, hwnd, NULL, cs->hInstance, NULL);
 		data->lengthSliderMinLabel = CreateWindow(L"STATIC", L"LSliderMinLabel", WS_CHILD | WS_VISIBLE | SS_LEFT, 0, 0, 10, 10, hwnd, NULL, cs->hInstance, NULL);
 		data->lengthSliderMaxLabel = CreateWindow(L"STATIC", L"LSliderMaxLabel", WS_CHILD | WS_VISIBLE | SS_RIGHT, 0, 0, 10, 10, hwnd, NULL, cs->hInstance, NULL);
 		data->lengthSliderValueLabel = CreateWindow(L"STATIC", L"LSliderValueLabel", WS_CHILD | WS_VISIBLE | SS_RIGHT, 0, 0, 10, 10, hwnd, NULL, cs->hInstance, NULL);
@@ -168,11 +171,17 @@ LRESULT CALLBACK MainWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		const MainWinData* data = (MainWinData*)GetWindowLongPtr(hwnd, MAINWINDATA_OFFSET);
 		if ((HWND)lParam == data->lengthSlider) {
 			DOUBLE length = (DOUBLE)SendMessage((HWND)lParam, TBM_GETPOS, 0, 0);
+			WCHAR buf[30];
 			SendMessage(data->paintWin, PWM_SETPENDULUMLENGTH, 0, (LPARAM)&length);
+			swprintf(buf, sizeof(buf), L"%.0f m", length);
+			SetWindowText(data->lengthSliderValueLabel, buf);
 		}
 		else if ((HWND)lParam == data->massSlider) {
 			DOUBLE mass = (DOUBLE)SendMessage((HWND)lParam, TBM_GETPOS, 0, 0);
+			WCHAR buf[30];
 			SendMessage(data->paintWin, PWM_SETPENDULUMMASS, 0, (LPARAM)&mass);
+			swprintf(buf, sizeof(buf), L"%.0f m", mass);
+			SetWindowText(data->massSliderValueLabel, buf);
 		}
 	}
 	break;
