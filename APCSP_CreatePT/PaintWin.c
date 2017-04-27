@@ -34,6 +34,7 @@ LRESULT CALLBACK PaintWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			MessageBox(hwnd, L"Unable to allocate memory.", L"Error", MB_ICONERROR | MB_OK);
 			return -1;
 		}
+		InitPaintWinData(data);
 
 		/* TODO remove this placeholder */
 		//data->pendulumLength = 100;
@@ -103,14 +104,8 @@ LRESULT CALLBACK PaintWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 void DrawPendulum(HWND hwnd, HDC hdc, PAINTSTRUCT* ps, const PendulumData* data)
 {
 	RECT rc;
-	WCHAR buf[50];
-
-	wsprintf(buf, L"%d", data->count);
 
 	GetClientRect(hwnd, &rc);
-	SetTextColor(hdc, RGB(0, 0, 0));
-	SetBkMode(hdc, TRANSPARENT);
-	DrawText(hdc, buf, -1, &rc, DT_CENTER | DT_SINGLELINE | DT_VCENTER);
 
 	MoveToEx(hdc, rc.right / 2, rc.top, NULL);
 	LineTo(hdc, data->pendulumPos.x, data->pendulumPos.y);
@@ -124,11 +119,23 @@ void DrawPendulum(HWND hwnd, HDC hdc, PAINTSTRUCT* ps, const PendulumData* data)
 void UpdatePendulum(HWND hwnd, PendulumData* data, INT interval)
 {
 	RECT rc;
-	data->count += interval;
+	data->count += interval / data->pendulumMass * 40.0;
 	data->phase = data->count / 500.0;
 	GetClientRect(hwnd, &rc);
 	data->pendulumPos.x = (LONG)(data->pendulumLength * sin(sin(data->phase) / 4) + rc.right / 2);
 	data->pendulumPos.y = (LONG)(data->pendulumLength * cos(sin(data->phase) / 4));
 	InvalidateRect(hwnd, NULL, TRUE);
 	UpdateWindow(hwnd);
+}
+
+void InitPaintWinData(PendulumData* data)
+{
+	data->pendulumPos.x = 0;
+	data->pendulumPos.y = 0;
+	data->pendulumVelocity.x = 0;
+	data->pendulumVelocity.y = 0;
+	data->pendulumMass = 1.0;
+	data->count = 0.0;
+	data->phase = 0.0;
+	data->pendulumLength = 1.0;
 }

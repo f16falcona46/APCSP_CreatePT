@@ -180,7 +180,7 @@ LRESULT CALLBACK MainWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			DOUBLE mass = (DOUBLE)SendMessage((HWND)lParam, TBM_GETPOS, 0, 0);
 			WCHAR buf[30];
 			SendMessage(data->paintWin, PWM_SETPENDULUMMASS, 0, (LPARAM)&mass);
-			swprintf(buf, sizeof(buf), L"%.0f m", mass);
+			swprintf(buf, sizeof(buf), L"%.0f kg", mass);
 			SetWindowText(data->massSliderValueLabel, buf);
 		}
 	}

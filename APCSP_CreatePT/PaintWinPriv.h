@@ -5,7 +5,7 @@ typedef struct {
 	POINT pendulumPos;
 	POINT pendulumVelocity;
 	DOUBLE pendulumMass;
-	INT count;
+	DOUBLE count;
 	DOUBLE phase;
 	DOUBLE pendulumLength;
 } PendulumData;
@@ -23,3 +23,6 @@ void DrawPendulum(HWND hwnd, HDC hdc, PAINTSTRUCT* ps, const PendulumData* data)
 
 /* updates pendulum; interval is number of ms elapsed since last tick */
 void UpdatePendulum(HWND hwnd, PendulumData* data, INT interval);
+
+/* inits PendulumData struct */
+void InitPaintWinData(PendulumData* data);

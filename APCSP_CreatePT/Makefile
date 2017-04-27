@@ -83,13 +83,13 @@ $(EXENAME): $(OBJS)
 clean:
 	rm -f ./*.o ./$(EXENAME) ./*.d ./*.gch
 
-main.o: main.c
+main.o: main.c MainWin.h
 	$(CC) -c $(FLAGS) main.c -o main.o
 
-MainWin.o: MainWin.c
+MainWin.o: MainWin.c MainWin.h MainWinPriv.h
 	$(CC) -c $(FLAGS) MainWin.c -o MainWin.o
 
-PaintWin.o: PaintWin.c
+PaintWin.o: PaintWin.c PaintWin.h PaintWinPriv.h
 	$(CC) -c $(FLAGS) PaintWin.c -o PaintWin.o
 
 #$(RESOURCES).o: $(RESOURCES)
