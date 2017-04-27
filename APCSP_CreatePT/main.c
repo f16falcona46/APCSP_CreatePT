@@ -2,7 +2,11 @@
 
 #include "MainWin.h"
 
+#if (defined(__MINGW32__) || defined(__MINGW64__)) && defined(UNICODE)
+INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstnace, LPWSTR lpCmdLine, int nCmdShow)
+#else
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstnace, LPSTR lpCmdLine, int nCmdShow)
+#endif
 {
 	HWND hwnd;
 	MSG msg;
