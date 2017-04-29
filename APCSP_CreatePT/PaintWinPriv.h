@@ -5,7 +5,6 @@ typedef struct {
 	POINT pendulumPos;
 	POINT pendulumVelocity;
 	DOUBLE pendulumMass;
-	DOUBLE count;
 	DOUBLE phase;
 	DOUBLE pendulumLength;
 } PendulumData;

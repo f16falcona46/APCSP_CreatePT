@@ -2,6 +2,7 @@
 #include "PaintWinPriv.h"
 #include "IDs.h"
 
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <assert.h>
 
@@ -119,8 +120,8 @@ void DrawPendulum(HWND hwnd, HDC hdc, PAINTSTRUCT* ps, const PendulumData* data)
 void UpdatePendulum(HWND hwnd, PendulumData* data, INT interval)
 {
 	RECT rc;
-	data->count += interval / data->pendulumMass * 40.0;
-	data->phase = data->count / 500.0;
+	data->phase += interval / sqrt(data->pendulumLength) / 60.0;
+	if (data->phase > 2 * M_PI) data->phase -= 2 * M_PI;
 	GetClientRect(hwnd, &rc);
 	data->pendulumPos.x = (LONG)(data->pendulumLength * sin(sin(data->phase) / 4) + rc.right / 2);
 	data->pendulumPos.y = (LONG)(data->pendulumLength * cos(sin(data->phase) / 4));
@@ -135,7 +136,6 @@ void InitPaintWinData(PendulumData* data)
 	data->pendulumVelocity.x = 0;
 	data->pendulumVelocity.y = 0;
 	data->pendulumMass = 1.0;
-	data->count = 0.0;
 	data->phase = 0.0;
 	data->pendulumLength = 1.0;
 }
